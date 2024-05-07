@@ -1,0 +1,82 @@
+#include <TFT_eSPI.h>
+
+// Set up de la pin de un flexsensor
+const int fpouce = 27;
+const int findex = 26;
+const int fmajeur = 25;
+const int fannulaire = 33;
+const int fauriculaire = 32;
+
+
+int valFpouce;                      // On définit les valeurs des flexomètres
+int valFindex;
+int valFmajeur;
+int valFannualaire;
+int valFauriculaire;
+
+/*
+//const int nombreMesureMax = 300;    // 30 flexions/min - entrainement de 10 min => 300 mesures
+//const int nombreMesureMax = 10; 
+int mesureF1[nombreMesureMax];
+int mesureF2[nombreMesureMax];
+int mesureF3[nombreMesureMax];
+int mesureF4[nombreMesureMax];
+int mesureF5[nombreMesureMax];
+int nombreMesure=0;
+*/
+
+// Set up l'écran de la TTGO
+TFT_eSPI tft = TFT_eSPI();
+TFT_eSprite sprite = TFT_eSprite(&tft);
+
+
+int centreX= 67 ;    
+int centreY= 120 ;
+
+void setup() {
+  pinMode(fpouce, INPUT);           //On définit les inputs du systèmes=>capteur de flexion
+  pinMode(findex, INPUT);
+  pinMode(fmajeur, INPUT);
+  pinMode(fannulaire, INPUT);
+  pinMode(fauriculaire, INPUT);
+
+  Serial.begin(9600);
+  tft.begin();
+  tft.fillScreen(TFT_WHITE);
+}
+
+void loop() {
+  int valF1=analogRead(fpouce);       //On lit la valeur des Flexomètres
+  int valF2=analogRead(findex);
+  int valF3=analogRead(fmajeur);
+  int valF4=analogRead(fannulaire);
+  int valF5=analogRead(fauriculaire);
+
+  valF1= map(valFlex, 1000,3000,0,500);
+  valF2= map(valFlex, 1000,3000,0,500);
+  valF3= map(valFlex, 1000,3000,0,500);
+  valF4= map(valFlex, 1000,3000,0,500);
+  valF5= map(valFlex, 1000,3000,0,500);
+
+  int moyenne= (valF1+valF2+valF3+valF4+valF5)/5;
+  affichage_Ecran(moyenne);
+  delay(1000);
+
+}
+
+void affichage_Ecran(int valFlex){
+
+  sprite.createSprite(135, 280);
+  sprite.fillSprite(TFT_BLACK);
+
+  //Affichage batterie OPTIONNEL
+  // A coder
+
+  sprite.setTextDatum(TC_DATUM);
+  sprite.setTextColor(TFT_WHITE);
+  sprite.drawString("MoyFlex :", centerX, 40, 4);
+  sprite.drawNumber(moyenne, centerX, 75, 6);
+  sprite.pushSprite(0,0);
+
+}
+
